@@ -6,9 +6,11 @@
   "homepage": "https://github.com/biao-biao-ls/zhb-cli#readme",
   "license": "ISC",
   "main": "lib/core.js",
+  "bin": {
+    "zhb-cli": "lib/core.js"
+  },
   "directories": {
-    "lib": "lib",
-    "test": "__tests__"
+    "lib": "lib"
   },
   "files": [
     "lib"
@@ -20,10 +22,11 @@
     "type": "git",
     "url": "git+https://github.com/biao-biao-ls/zhb-cli.git"
   },
-  "scripts": {
-    "test": "node ./__tests__/@zhb-cli/core.test.js"
-  },
+  "scripts": {},
   "bugs": {
     "url": "https://github.com/biao-biao-ls/zhb-cli/issues"
+  },
+  "dependencies": {
+    "@zhb-cli/utils": "^1.0.1"
   }
 }

@@ -1,7 +1,5 @@
-'use strict';
+#!/usr/bin/env node
 
-module.exports = core;
+const utils = require('@zhb-cli/utils')
 
-function core() {
-  return 'Hello from core';
-}
+console.log(utils());
