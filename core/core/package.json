@@ -7,7 +7,7 @@
   "license": "ISC",
   "main": "lib/core.js",
   "bin": {
-    "zhb-cli": "lib/core.js"
+    "zhb-cli": "bin/index.js"
   },
   "directories": {
     "lib": "lib"
@@ -27,6 +27,8 @@
     "url": "https://github.com/biao-biao-ls/zhb-cli/issues"
   },
   "dependencies": {
-    "@zhb-cli/utils": "^1.0.2"
+    "@zhb-cli/utils": "^1.0.2",
+    "import-local": "^3.1.0",
+    "npmlog": "^7.0.1"
   }
 }

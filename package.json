@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "description": "zhb-cli dev",
   "main": "index.js",
-  "workspaces": [ "packages/*" ],
+  "workspaces": [
+    "core/*",
+    "commands/*",
+    "models/*",
+    "utils/*"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,5 +17,8 @@
   "license": "ISC",
   "devDependencies": {
     "lerna": "^8.1.2"
+  },
+  "dependencies": {
+    "@zhb-cli/core": "^1.0.2"
   }
 }
