@@ -1,6 +1,6 @@
 {
   "name": "@zhb-cli/core",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "zhb-cli core",
   "author": "zhb333 <1140457303@qq.com>",
   "homepage": "https://github.com/biao-biao-ls/zhb-cli#readme",
@@ -27,7 +27,7 @@
     "url": "https://github.com/biao-biao-ls/zhb-cli/issues"
   },
   "dependencies": {
-    "@zhb-cli/utils": "^1.0.2",
+    "@zhb-cli/utils": "^1.0.3",
     "import-local": "^3.1.0",
     "npmlog": "^7.0.1"
   }
