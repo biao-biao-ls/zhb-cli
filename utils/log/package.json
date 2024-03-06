@@ -1,0 +1,35 @@
+{
+  "name": "@zhb-cli/log",
+  "version": "1.0.3",
+  "description": "zhb-cli log",
+  "keywords": [
+    "log"
+  ],
+  "author": "zhb333 <1140457303@qq.com>",
+  "homepage": "https://github.com/biao-biao-ls/zhb-cli#readme",
+  "license": "ISC",
+  "main": "lib/log.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/biao-biao-ls/zhb-cli.git"
+  },
+  "scripts": {
+    "test": "node ./__tests__/@zhb-cli/log.test.js"
+  },
+  "bugs": {
+    "url": "https://github.com/biao-biao-ls/zhb-cli/issues"
+  },
+  "dependencies": {
+    "npmlog": "^7.0.1"
+  }
+}

@@ -1,16 +1,17 @@
 {
-  "name": "@zhb-cli/core",
+  "name": "@zhb-cli/get-npm-info",
   "version": "1.0.3",
-  "description": "zhb-cli core",
+  "description": "zhb-cli get-npm-info",
+  "keywords": [
+    "get-npm-info"
+  ],
   "author": "zhb333 <1140457303@qq.com>",
   "homepage": "https://github.com/biao-biao-ls/zhb-cli#readme",
   "license": "ISC",
-  "main": "lib/core.js",
-  "bin": {
-    "zhb-cli": "bin/index.js"
-  },
+  "main": "lib/get-npm-info.js",
   "directories": {
-    "lib": "lib"
+    "lib": "lib",
+    "test": "__tests__"
   },
   "files": [
     "lib"
@@ -22,21 +23,15 @@
     "type": "git",
     "url": "git+https://github.com/biao-biao-ls/zhb-cli.git"
   },
-  "scripts": {},
+  "scripts": {
+    "test": "node ./__tests__/@zhb-cli/get-npm-info.test.js"
+  },
   "bugs": {
     "url": "https://github.com/biao-biao-ls/zhb-cli/issues"
   },
   "dependencies": {
-    "@zhb-cli/get-npm-info": "^1.0.3",
-    "@zhb-cli/log": "^1.0.3",
-    "@zhb-cli/utils": "^1.0.3",
-    "colors": "^1.4.0",
-    "dotenv": "^16.4.5",
-    "import-local": "^3.1.0",
-    "minimist": "^1.2.8",
-    "path-exists": "^5.0.0",
-    "root-check": "^2.0.0",
+    "axios": "^1.6.7",
     "semver": "^7.6.0",
-    "user-home": "^3.0.0"
+    "url-join": "^5.0.0"
   }
 }

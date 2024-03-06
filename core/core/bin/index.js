@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 
 const importLocal = require('import-local')
-
-console.log(importLocal(__filename));
+const log = require('@zhb-cli/log')
 
 if (importLocal(__filename)) {
-    require('npmlog').info('cli', '正在使用 zhb-cli 本地版本')
+    log.info('cli', '正在使用 zhb-cli 本地版本')
 } else {
     require('../lib/core.js')(process.argv.slice(2))
 }

@@ -17,8 +17,5 @@
   "license": "ISC",
   "devDependencies": {
     "lerna": "^8.1.2"
-  },
-  "dependencies": {
-    "@zhb-cli/core": "^1.0.2"
   }
 }
