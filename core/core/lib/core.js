@@ -28,7 +28,7 @@ async function core(argvs) {
  */
 async function checkGlobalUpdate() {
   // 1. 获取当前版本号和模块名
-  const currentVersion = "1.0.0";
+  const currentVersion = pkg.version;
   const npmName = pkg.name;
   // 2. 调用 npm API 获取最新版本号
   const lastVersion = await getNpmSemverVersion(

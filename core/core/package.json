@@ -27,6 +27,7 @@
     "url": "https://github.com/biao-biao-ls/zhb-cli/issues"
   },
   "dependencies": {
+    "@zhb-cli/commander": "^1.0.3",
     "@zhb-cli/get-npm-info": "^1.0.3",
     "@zhb-cli/log": "^1.0.3",
     "@zhb-cli/utils": "^1.0.3",

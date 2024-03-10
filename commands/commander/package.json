@@ -1,0 +1,32 @@
+{
+  "name": "@zhb-cli/commander",
+  "version": "1.0.3",
+  "description": "> TODO: description",
+  "author": "zhb333 <1140457303@qq.com>",
+  "homepage": "https://github.com/biao-biao-ls/zhb-cli#readme",
+  "license": "ISC",
+  "main": "lib/commander.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/biao-biao-ls/zhb-cli.git"
+  },
+  "scripts": {
+    "test": "node ./__tests__/@zhb-cli/commander.test.js"
+  },
+  "bugs": {
+    "url": "https://github.com/biao-biao-ls/zhb-cli/issues"
+  },
+  "dependencies": {
+    "commander": "^12.0.0"
+  }
+}
