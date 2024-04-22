@@ -1,7 +1,11 @@
-'use strict';
+"use strict";
 
-module.exports = utils;
-
-function utils() {
-  return 'Hello from utils';
+function getJSType(obj) {
+  return Object.prototype.toString.call(obj).slice(8, -1);
 }
+
+function isObject(obj) {
+  return getJSType(obj) === "Object";
+}
+
+module.exports = { isObject, getJSType };

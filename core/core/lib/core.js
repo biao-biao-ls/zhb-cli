@@ -1,25 +1,88 @@
 module.exports = core;
 
+const { homedir } = require("os");
 const path = require("path");
 const semver = require("semver");
 const colors = require("colors/safe");
-const userHome = require("user-home");
+const commander = require("commander");
 const log = require("@zhb-cli/log");
 const { getNpmSemverVersion } = require("@zhb-cli/get-npm-info");
+const init = require("@zhb-cli/init");
+const exec = require("@zhb-cli/exec");
 const pkg = require("../package.json");
 const constant = require("./const");
 
+const userHome = homedir();
+const program = new commander.Command();
+const defaultRegistry = "tencent";
+
 async function core(argvs) {
   try {
-    checkPkgVersion();
-    checkNodeVersion();
-    await checkRoot();
-    await checkUserHome();
-    checkInputArgs(argvs);
-    await checkEnv();
-    await checkGlobalUpdate();
+    await prepare();
+    registerCommand();
   } catch (e) {
     log.error("", colors.red(e.message));
+    if (program.debug) {
+      console.log(e);
+    }
+  }
+}
+
+async function prepare() {
+  process.env.LOG_LEVEL = log.level;
+  process.env.CLI_REGISTRY = defaultRegistry;
+  checkPkgVersion();
+  checkNodeVersion();
+  await checkRoot();
+  await checkUserHome();
+  await checkEnv();
+  await checkGlobalUpdate();
+}
+
+function registerCommand() {
+  program
+    .name(Object.keys(pkg.bin)[0])
+    .usage("<command> [options]")
+    .description("zhb-cli 脚手架，支持各种类型的前端项目开发，打包部署一体化")
+    .version(pkg.version)
+    .option("-d, --debug", "是否开启调试模式", false)
+    .option(
+      "-r, --registry",
+      "设置 NPM 镜像(值: npm|yarn|tencent|cnpm|taobao|npmMirror)",
+      defaultRegistry
+    )
+    .option("-tp, --targetPath <targetPath>", "是否指定本地调试文件路径", "");
+
+  program
+    .command("init [projectName]")
+    .option("-f, --force", "是否强制初始化项目")
+    .action(exec);
+
+  program.on("option:targetPath", (targetPath) => {
+    process.env.CLI_TARGET_PATH = targetPath;
+  });
+
+  program.on("option:debug", () => {
+    process.env.LOG_LEVEL = "verbose";
+    log.level = process.env.LOG_LEVEL;
+  });
+
+  program.on("option:registry", (registry) => {
+    process.env.CLI_REGISTRY = registry;
+  });
+
+  program.on("command:*", (args) => {
+    const avaliableCommands = program.commands.map((cmd) => cmd.name());
+    log.error("未知命令：", colors.red(args[0]));
+    if (avaliableCommands.length) {
+      log.info("可用命令：", colors.green(avaliableCommands.join(", ")));
+    }
+  });
+
+  program.parse(process.argv);
+
+  if (!program.args.length) {
+    program.outputHelp();
   }
 }
 
@@ -31,11 +94,7 @@ async function checkGlobalUpdate() {
   const currentVersion = pkg.version;
   const npmName = pkg.name;
   // 2. 调用 npm API 获取最新版本号
-  const lastVersion = await getNpmSemverVersion(
-    npmName,
-    currentVersion,
-    "tencent" // :todo 根据环境变量，取 npm 源
-  );
+  const lastVersion = await getNpmSemverVersion(npmName, currentVersion);
   // 3. 提示用户更新到该版本
   if (lastVersion && semver.gt(lastVersion, currentVersion)) {
     log.warn(
@@ -73,29 +132,6 @@ function createDefaultConfig() {
     ),
   };
   process.env.CLI_HOME_PATH = cliConfig.cliHome;
-}
-
-/**
- * 入参检查
- * @param argvs
- */
-function checkInputArgs(argvs) {
-  const minimist = require("minimist");
-  const args = minimist(argvs);
-  checkArgs(args);
-}
-
-/**
- * 设置 debug 模式
- * @param args
- */
-function checkArgs(args) {
-  if (args.debug) {
-    process.env.LOG_LEVEL = "verbose";
-  } else {
-    process.env.LOG_LEVEL = "info";
-  }
-  log.level = process.env.LOG_LEVEL;
 }
 
 /**
