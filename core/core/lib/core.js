@@ -32,7 +32,7 @@ async function prepare() {
   process.env.LOG_LEVEL = log.level;
   process.env.CLI_REGISTRY = defaultRegistry;
   checkPkgVersion();
-  checkNodeVersion();
+
   await checkRoot();
   await checkUserHome();
   await checkEnv();
@@ -152,19 +152,6 @@ async function checkUserHome() {
 async function checkRoot() {
   const rootCheck = await import("root-check");
   rootCheck.default();
-}
-
-/**
- * 检查 Node 版本号
- */
-function checkNodeVersion() {
-  //   第一步，获取当前Node版本号
-  const currentVersion = process.version;
-  //   第二步，比对最低版本号
-  const lowestVersion = constant.LOWEST_VERSION;
-  if (!semver.gte(currentVersion, lowestVersion)) {
-    throw new Error(`zhb-cli 需要安装 V${lowestVersion} 以上版本的 Node.js`);
-  }
 }
 
 /**

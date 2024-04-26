@@ -1,6 +1,7 @@
 "use strict";
 
 const path = require("path");
+const cp = require('child_process')
 const log = require("@zhb-cli/log");
 const Package = require("@zhb-cli/package");
 
@@ -33,10 +34,10 @@ async function exec(...args) {
       packageVersion,
       storeDir,
     });
-    const isExists = await pkg.exists()
+    const isExists = await pkg.exists();
     if (isExists) {
       // 更新 pkg
-      await pkg.update()
+      await pkg.update();
     } else {
       // 安装 pkg
       await pkg.install();
@@ -50,7 +51,28 @@ async function exec(...args) {
   }
   const rootFilePath = await pkg.getRootFilePath();
   if (rootFilePath) {
-    require(rootFilePath)(...args);
+    try {
+      // 在当前进程中调用
+      // require(rootFilePath)(args);
+      // 在 node 子进程中调用
+      const code = 'console.log(1)'
+      const child = cp.spawn('node', ['-e', code], {
+        cwd: process.cwd(),
+        stdio: 'inherit'
+      })
+      child.on('error', e => {
+        log.error(e.message)
+        process.exit(1)
+      })
+      child.on('exit', e => {
+        log.verbose('命令执行成功: ' + e)
+        process.exit(e)
+      })
+      // child.stdout.on('data', (chunk) => {})
+      // child.stderr.on('data', (chunk) => {})
+    } catch (e) {
+      log.error(e.message)
+    }
   }
 }
 
