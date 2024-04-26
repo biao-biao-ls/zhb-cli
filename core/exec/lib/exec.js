@@ -55,7 +55,15 @@ async function exec(...args) {
       // 在当前进程中调用
       // require(rootFilePath)(args);
       // 在 node 子进程中调用
-      const code = 'console.log(1)'
+      const cmd = args[args.length - 1]
+      const o = Object.create(null)
+      Object.keys(cmd).forEach(key => {
+        if (cmd.hasOwnProperty(key) && !key.startsWith('_') && key !== 'parent') {
+          o[key] = cmd[key]
+        }
+      })
+      args[args.length - 1] = o
+      const code = `require("${rootFilePath}")(${JSON.stringify(args)})`
       const child = cp.spawn('node', ['-e', code], {
         cwd: process.cwd(),
         stdio: 'inherit'
@@ -68,8 +76,6 @@ async function exec(...args) {
         log.verbose('命令执行成功: ' + e)
         process.exit(e)
       })
-      // child.stdout.on('data', (chunk) => {})
-      // child.stderr.on('data', (chunk) => {})
     } catch (e) {
       log.error(e.message)
     }
