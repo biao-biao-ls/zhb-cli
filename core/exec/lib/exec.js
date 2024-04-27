@@ -50,7 +50,6 @@ async function exec(...args) {
     });
   }
   const rootFilePath = await pkg.getRootFilePath();
-  log.error('win32 拿不到 rootFilePath')
   if (rootFilePath) {
     try {
       // 在当前进程中调用
@@ -65,7 +64,7 @@ async function exec(...args) {
       })
       args[args.length - 1] = o
       const code = `require("${rootFilePath}")(${JSON.stringify(args)})`
-      const child = spawn('node', ['-e', code], {
+      const child = cp.spawn('node', ['-e', code], {
         cwd: process.cwd(),
         stdio: 'inherit'
       })
@@ -81,15 +80,6 @@ async function exec(...args) {
       log.error(e.message)
     }
   }
-}
-
-// 兼容不同系统
-function spawn(command, args, options) {
-  // const win32 = process.platform === 'win32'
-  const win32 = false
-  const cmd = win32 ? 'cmd' : command
-  const cmdArgs = win32 ? ['\c'].concat(command, args) : args
-  return cp.spawn(cmd, cmdArgs, options || {})
 }
 
 module.exports = exec;
