@@ -28,6 +28,10 @@
   },
   "dependencies": {
     "@zhb-cli/command": "^1.0.3",
-    "@zhb-cli/log": "^1.0.3"
+    "@zhb-cli/log": "^1.0.3",
+    "fs-extra": "^11.2.0",
+    "inquirer": "^9.2.20",
+    "semver": "^7.6.0",
+    "validate-npm-package-name": "^5.0.0"
   }
 }
