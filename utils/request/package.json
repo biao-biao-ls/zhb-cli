@@ -1,13 +1,14 @@
 {
-  "name": "@zhb-cli/utils",
+  "name": "@zhb-cli/request",
   "version": "1.0.3",
-  "description": "zhb-cli utils",
+  "description": "> TODO: description",
   "author": "zhb333 <1140457303@qq.com>",
   "homepage": "https://github.com/biao-biao-ls/zhb-cli#readme",
   "license": "ISC",
-  "main": "lib/utils.js",
+  "main": "lib/request.js",
   "directories": {
-    "lib": "lib"
+    "lib": "lib",
+    "test": "__tests__"
   },
   "files": [
     "lib"
@@ -19,11 +20,13 @@
     "type": "git",
     "url": "git+https://github.com/biao-biao-ls/zhb-cli.git"
   },
-  "scripts": {},
+  "scripts": {
+    "test": "node ./__tests__/@zhb-cli/request.test.js"
+  },
   "bugs": {
     "url": "https://github.com/biao-biao-ls/zhb-cli/issues"
   },
   "dependencies": {
-    "ora": "^8.0.1"
+    "axios": "^1.6.8"
   }
 }

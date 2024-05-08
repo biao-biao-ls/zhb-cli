@@ -6,6 +6,10 @@ const semver = require("semver");
 const validatePackageName = require("validate-npm-package-name");
 const Command = require("@zhb-cli/command");
 const log = require("@zhb-cli/log");
+const Package = require("@zhb-cli/package");
+const { spinnerStart, sleep } = require("@zhb-cli/utils");
+
+const getProjectTemplate = require("./getProjectTemplate");
 
 const TYPE_PROJECT = "project";
 const TYPE_COMPONENT = "component";
@@ -25,24 +29,77 @@ class InitCommand extends Command {
       const projectInfo = await this.prepare();
       if (projectInfo) {
         // 2. 下载模板
-        log.verbose('projectInfo', projectInfo)
-        this.downloadTemplate()
+        log.verbose("projectInfo", projectInfo);
+        this.projectInfo = projectInfo;
+        await this.downloadTemplate();
         // 3.
       }
     } catch (e) {
+      console.log(e);
       log.error(e.message);
     }
   }
 
-  downloadTemplate() {
+  async downloadTemplate() {
     // 1. 通过项目模板API获取项目模板信息
     // 1.1 通过egg.js 搭建一套后端系统
     // 1.2 通过 npm 存储项目模板
     // 1.3 将项目模板信息存储道 mongodb数据库中
     // 1.4 通过 egg.js 获取 mongodb 中的数据并且通过 API 返回
+    // 0. 判断项目模板是否存在
+    const { projectTemplate } = this.projectInfo;
+    const templateInfo = this.template.find(
+      (item) => item.npmName === projectTemplate
+    );
+    const targetPath = path.resolve(process.env.CLI_HOME_PATH, "template");
+    const storeDir = path.resolve(targetPath, "node_modules");
+    const { npmName, version } = templateInfo;
+    this.templateInfo = templateInfo;
+    const templateNpm = new Package({
+      targetPath,
+      storeDir,
+      packageName: npmName,
+      packageVersion: version,
+    });
+    if (!(await templateNpm.exists())) {
+      const spinner = await spinnerStart("正在下载模板...");
+      await sleep();
+      try {
+        await templateNpm.install();
+      } catch (e) {
+        throw e;
+      } finally {
+        spinner.stop();
+        if (await templateNpm.exists()) {
+          log.success("下载模板成功");
+          this.templateNpm = templateNpm;
+        }
+      }
+    } else {
+      const spinner = await spinnerStart("正在更新模板...");
+      await sleep();
+      try {
+        await templateNpm.update();
+      } catch (e) {
+        throw e;
+      } finally {
+        spinner.stop();
+        if (await templateNpm.exists()) {
+          log.success("更新模板成功");
+          this.templateNpm = templateNpm;
+        }
+      }
+    }
   }
 
   async prepare() {
+    // 0. 判断项目模板是否存在
+    const template = await getProjectTemplate();
+    if (!template || template.length === 0) {
+      throw new Error("项目模板不存在");
+    }
+    this.template = template;
+
     const { default: inquirer } = await import("inquirer");
     const localPath = process.cwd();
     // 1. 判断当前目录是否为空
@@ -145,17 +202,30 @@ class InitCommand extends Command {
             }
           },
         },
+        {
+          type: "list",
+          name: "projectTemplate",
+          message: `请选择项目模板`,
+          choices: this.createTemplateChoice(),
+        },
       ]);
       projectInfo = {
         type,
-        ...project
-      }
+        ...project,
+      };
     }
     if (type === TYPE_COMPONENT) {
     }
     // return 项目的基本信息 （object）
 
     return projectInfo;
+  }
+
+  createTemplateChoice() {
+    return this.template.map((item) => ({
+      value: item.npmName,
+      name: item.name,
+    }));
   }
 
   isDirEmpty(localPath) {
