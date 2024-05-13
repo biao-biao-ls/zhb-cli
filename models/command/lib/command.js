@@ -36,6 +36,7 @@ class Command {
         this.exec()
       });
       chain.catch((err) => {
+        console.log(err)
         log.error(err.message);
       });
     });

@@ -32,7 +32,9 @@
     "@zhb-cli/package": "^1.0.3",
     "@zhb-cli/request": "^1.0.3",
     "@zhb-cli/utils": "^1.0.3",
+    "ejs": "^3.1.10",
     "fs-extra": "^11.2.0",
+    "glob": "^10.3.15",
     "inquirer": "^9.2.20",
     "semver": "^7.6.0",
     "validate-npm-package-name": "^5.0.0"
