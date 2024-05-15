@@ -19,6 +19,7 @@ const TYPE_COMPONENT = "component";
 const TEMPLATE_TYPE_NORMAL = "normal";
 const TEMPLATE_TYPE_CUSTOM = "custom";
 const WHITE_COMMAND = ["npm", "cnpm"];
+const COMPONENT_FILE = ".componentrc";
 
 class InitCommand extends Command {
   init() {
@@ -67,7 +68,33 @@ class InitCommand extends Command {
     }
   }
 
-  async installCustomTemplate() {}
+  async installCustomTemplate() {
+    // 查询自定义模板的入口文件
+    if (await this.templateNpm.exists()) {
+      const rootFile = await this.templateNpm.getRootFilePath();
+      if (fs.existsSync(rootFile)) {
+        log.notice("开始执行自定义模板");
+        const templatePath = path.resolve(
+          this.templateNpm.cacheFilePath,
+          "template"
+        );
+        const options = {
+          templateInfo: this.templateInfo,
+          projectInfo: this.projectInfo,
+          sourcePath: templatePath,
+          targetPath: process.cwd(),
+        };
+        const code = `require('${rootFile}')(${JSON.stringify(options)})`;
+        await execAsync("node", ["-e", code], {
+          stdio: "inherit",
+          cwd: process.cwd(),
+        });
+        log.success("自定义模板安装成功");
+      } else {
+        throw new Error("自定义模板入口文件不存在！");
+      }
+    }
+  }
 
   async installNormalTemplate() {
     log.verbose("templateNpm", this.templateNpm);
@@ -97,7 +124,7 @@ class InitCommand extends Command {
       log.error("ejs渲染失败", err.message);
     }
     // 如果是组件，则生成组件配置文件
-    await this.createComponentFile(targetPath);
+    this.createComponentFile(targetPath);
     const { installCommand, startCommand } = this.templateInfo;
     try {
       // 依赖安装
@@ -109,7 +136,21 @@ class InitCommand extends Command {
     }
   }
 
-  async createComponentFile() {}
+  createComponentFile(targetPath) {
+    const templateInfo = this.templateInfo;
+    const projectInfo = this.projectInfo;
+    if (templateInfo.tag.includes(TYPE_COMPONENT)) {
+      const componentData = {
+        ...projectInfo,
+        buildPath: templateInfo.buildPath || "",
+        examplePath: templateInfo.examplePath || "",
+        npmName: templateInfo.npmName,
+        npmVersion: templateInfo.version,
+      };
+      const componentFile = path.resolve(targetPath, COMPONENT_FILE);
+      fs.writeFileSync(componentFile, JSON.stringify(componentData));
+    }
+  }
 
   async execCommand(command, errMsg) {
     let ret;
